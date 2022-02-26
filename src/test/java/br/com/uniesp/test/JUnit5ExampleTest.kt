@@ -1,71 +1,64 @@
-package br.com.uniesp.test;
+package br.com.uniesp.test
 
-import br.com.uniesp.entidate.PessoaRequest;
-import br.com.uniesp.entidate.PessoaResponse;
-import io.qameta.allure.Allure;
-import io.restassured.http.ContentType;
-import io.restassured.module.jsv.JsonSchemaValidator;
-import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
-import io.restassured.response.ValidatableResponseLogSpec;
-import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.*;
+import io.restassured.RestAssured
+import org.apache.http.HttpStatus
+import io.restassured.module.jsv.JsonSchemaValidator
+import br.com.uniesp.entidate.PessoaRequest
+import br.com.uniesp.entidate.PessoaResponse
+import io.restassured.http.ContentType
+import org.junit.jupiter.api.*
 
-import static io.restassured.RestAssured.*;
-
-class JUnit5ExampleTest {
-
+internal class JUnit5ExampleTest {
     @BeforeEach
-    void configuraApi() {
-        baseURI = 	"https://reqres.in/";
+    fun configuraApi() {
+        RestAssured.baseURI = "https://reqres.in/"
     }
-    @Test
-    void justAnExample() {
 
+    @Test
+    fun justAnExample() {
     }
+
     @Test
     @DisplayName("esse teste faz isso")
     @Tag("E2E")
-    void methodGet() {
-       given().log().all()
-                .when()
-                .get("api/users/2")
-                .then().contentType("application/json")
-                .statusCode(HttpStatus.SC_OK)
-                .and()
-                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("Schemas/thiagoExample.json"))
-                .log();
+    fun methodGet() {
+        RestAssured.given().log().all()
+            .`when`()["api/users/2"]
+            .then().contentType("application/json")
+            .statusCode(HttpStatus.SC_OK)
+            .and()
+            .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("Schemas/thiagoExample.json"))
+            .log()
     }
+
     @Test
-    void methodPost() {
+    fun methodPost() {
 
 //        basePath = "/api/users";
-        given()
-                .when()
-                .get("api/users/2")
-                .then().contentType("application/json")
-                .statusCode(HttpStatus.SC_OK)
-                .log().all();
+        RestAssured.given()
+            .`when`()["api/users/2"]
+            .then().contentType("application/json")
+            .statusCode(HttpStatus.SC_OK)
+            .log().all()
     }
+
     @Test
-    void methodPostFull() {
-        PessoaRequest pessoaRequest = new PessoaRequest("thiago","QA");
-
-        basePath= "/api/users";
-        PessoaResponse as = given().log().all()
-                .contentType(ContentType.JSON)
-                .body(pessoaRequest)
-                .when()
-                .post("/")
-                .then()
-                .statusCode(HttpStatus.SC_CREATED)
-                .and()
-                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("Schemas/methodPost.json"))
-                .log().all().extract().response().as(PessoaResponse.class);
-
-        Assertions.assertNotNull(as);
-        Assertions.assertNotNull(as.getId());
-        Assertions.assertEquals(pessoaRequest.getNome(), as.getNome());
-        Assertions.assertEquals(pessoaRequest.getJob(), as.getJob());
+    fun methodPostFull() {
+        val pessoaRequest = PessoaRequest("thiago", "QA")
+        RestAssured.basePath = "/api/users"
+        val `as` = RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(pessoaRequest)
+            .`when`()
+            .post("/")
+            .then()
+            .statusCode(HttpStatus.SC_CREATED)
+            .and()
+            .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("Schemas/methodPost.json"))
+            .log().all().extract().response().`as`(PessoaResponse::class.java)
+        Assertions.assertNotNull(`as`)
+        Assertions.assertNotNull(`as`.id)
+        Assertions.assertEquals(pessoaRequest.nome, `as`.nome)
+        Assertions.assertEquals(pessoaRequest.job, `as`.job)
     }
 }
