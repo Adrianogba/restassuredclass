@@ -1,8 +1,7 @@
 package br.com.uniesp.entidate
 
-data class PessoaResponse (
+data class PessoaUpdatedResponse (
     var nome: String? = null,
     var job: String? = null,
-    var id: String? = null,
-    var createdAt: String? = null
+    var updatedAt: String? = null
 )

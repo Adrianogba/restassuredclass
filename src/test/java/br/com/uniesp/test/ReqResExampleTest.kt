@@ -2,6 +2,7 @@ package br.com.uniesp.test
 
 import br.com.uniesp.entidate.PessoaRequest
 import br.com.uniesp.entidate.PessoaResponse
+import br.com.uniesp.entidate.PessoaUpdatedResponse
 import br.com.uniesp.servicos.Servicos
 import io.restassured.RestAssured
 import io.restassured.RestAssured.basePath
@@ -35,7 +36,7 @@ class ReqResExampleTest {
     fun methodPost() {
         val pessoaRequest = PessoaRequest("thiago", "QA")
         basePath = "/api/users"
-        val `as`: PessoaResponse = given()
+        val request: PessoaResponse = given()
             .contentType("application/json")
             .body(pessoaRequest)
             .`when`()
@@ -43,25 +44,28 @@ class ReqResExampleTest {
             .then()
             .statusCode(HttpStatus.SC_CREATED)
             .extract().response().`as`(PessoaResponse::class.java)
-        assertNotNull(`as`)
-        assertNotNull(`as`.id)
-        assertEquals(pessoaRequest.nome, `as`.nome)
-        assertEquals(pessoaRequest.job, `as`.job)
+        assertNotNull(request)
+        assertNotNull(request.id)
+        assertEquals(pessoaRequest.nome, request.nome)
+        assertEquals(pessoaRequest.job, request.job)
     }
 
     @Test
     fun methodPut() {
         val pessoaRequest = PessoaRequest("thiago", "QA")
         basePath = "api/users/2"
-        val request = given()
+        val request: PessoaUpdatedResponse = given()
             .contentType("application/json")
             .body(pessoaRequest)
             .`when`()
             .put(basePath)
             .then()
             .statusCode(HttpStatus.SC_OK)
+            .extract().response().`as`(PessoaUpdatedResponse::class.java)
         println(request)
         assertNotNull(request)
+        assertEquals(pessoaRequest.nome, request.nome)
+        assertEquals(pessoaRequest.job, request.job)
     }
 
     @Test
